@@ -10,9 +10,9 @@ docker run -p 8080:8080 -p 50000:50000 -v /Users/t720370/Documents/jenkinsfiles:
 pipeline {
   agent any
   environment {
-    AZURE_SUBSCRIPTION_ID='0888be57-ee47-4ba5-be90-b464e3daebf6'
-    AZURE_TENANT_ID='51fb973d-85c3-4d97-9707-645e645454a4'
-    AZURE_STORAGE_ACCOUNT='teste3112268159'
+    AZURE_SUBSCRIPTION_ID=''
+    AZURE_TENANT_ID=''
+    AZURE_STORAGE_ACCOUNT=''
   }
   stages {
     stage('Build') {
