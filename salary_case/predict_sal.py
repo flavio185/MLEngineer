@@ -22,4 +22,4 @@ def predict_salary(experience_level, employment_type, company_size, work_year, j
 
 sal = predict_salary("Junior", "Full-time", "Large", 2020, "Data Scientist", "Onsite", "DE")
 
-print("Sálario predito: "+str(sal))
+print("Salário predito: "+str(sal))
