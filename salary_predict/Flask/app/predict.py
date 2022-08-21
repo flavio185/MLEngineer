@@ -1,5 +1,12 @@
-def predict_salary(experience_level, employment_type, company_size, work_year, job_title, remote_ratio, employee_residence):
+import joblib
+import numpy as np
 
+print("Carregando modelo")
+enc = joblib.load('encoder.joblib')
+model = joblib.load('model.joblib')
+
+def predict(experience_level, employment_type, company_size, work_year, job_title, remote_ratio, employee_residence):
+    #Aplicando encoder nos dados recebidos
     work_year = str(work_year)
     categorical = enc.transform([[work_year, job_title, remote_ratio, employee_residence]]).toarray()
     categorical = categorical.reshape(categorical.shape[1],)
@@ -16,10 +23,9 @@ def predict_salary(experience_level, employment_type, company_size, work_year, j
     processed_data = np.concatenate((categorical,label_encoded))
     processed_data = processed_data.reshape(1, processed_data.shape[0])
 
-    salary_prediction = model.predict(processed_data)
-    
-    return(salary_prediction)
+    #Executando predição
+    salary_pred = model.predict(processed_data)
+    return(salary_pred)
 
-sal = predict_salary("Junior", "Full-time", "Large", 2020, "Data Scientist", "Onsite", "DE")
-
-print("Sálario predito: "+str(sal))
+#sal = predict_salary("Junior", "Full-time", "Large", 2020, "Data Scientist", "Onsite", "DE")
+#print("Sálario predito: "+str(sal))

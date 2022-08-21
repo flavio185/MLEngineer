@@ -3,6 +3,8 @@
 # For data cleaning 
 import pandas as pd
 import numpy as np
+import ssl
+from joblib import dump
 
 # For preprocessing and building model
 from sklearn.svm import SVR
@@ -10,9 +12,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
 
+def importDataSet():
+  ssl._create_default_https_context = ssl._create_unverified_context
+  url = 'https://raw.githubusercontent.com/flavio185/MLEngineer/main/salary_case/ds_salaries.csv'
+  dataset = pd.read_csv(url)
+  return dataset
 
-
-df = pd.read_csv("/Users/t720370/OneDrive - Santander Office 365/Documents/DataMaster/Case/ds_salaries.csv")
+df = importDataSet()
 
 # Drop unecessary columns
 df.drop(["Unnamed: 0", "salary"], axis = 1, inplace = True)
@@ -54,12 +60,9 @@ enc.fit(X_nominal_data)
 X_onehotencoded = enc.transform(X_nominal_data).toarray()
 X_onehotencoded = pd.DataFrame(X_onehotencoded)
 
-#print(X_onehotencoded.head())
 
-#print(X_ordinal_data.head())
 
 X = pd.concat([X_onehotencoded, X_ordinal_data], axis=1)
-#print(X.head())
 
 ###Training
 X_train, X_valid, y_train, y_valid = train_test_split(X, y, train_size = 0.8, test_size = 0.2, random_state = 1)
@@ -69,10 +72,7 @@ svr = SVR()
 
 model = SVR(C = 1, gamma = 1, kernel = "poly")
 model.fit(X_train, y_train)
-preds = model.predict(X_valid[:1])
-print(X_valid[:1])
-print(preds)
-#mean_absolute_error(preds, y_valid)
-from joblib import dump
+#preds = model.predict(X_valid[:1])
+
 dump(model, 'model.joblib') # save the model
 dump(enc, 'encoder.joblib') # save the encoder
