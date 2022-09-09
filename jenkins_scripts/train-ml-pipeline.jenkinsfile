@@ -18,9 +18,9 @@ pipeline {
             echo "Build step: Clonando projeto e setando variaveis de build"
             git clone $GIT_PROJECT
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
-            #cd $PROJECT_DIR
-            #export APP=$PROJECT_DIR
-            #export GITHUB_SHA=$(git rev-parse HEAD)
+            #Git clone pipeline scripts.
+            git clone https://github.com/flavio185/MLEngineer.git
+            cp MLEngineer/kenkins_scripts/azure-experiment/* /$PROJECT_DIR/Train
             echo "Rodar python no docker colocando classe azure ml la dentro"
             sudo docker run \
                 -e AZURE_CLIENT_SECRET=$AZURE_CLIENT_SECRET \
@@ -35,7 +35,7 @@ pipeline {
                 /bin/bash -c "pip install -r /$PROJECT_DIR/Train/requirements.txt && \
                 cd /$PROJECT_DIR/Train && \
                 python  /$PROJECT_DIR/Train/train.py && \
-                python /$PROJECT_DIR/Train/saveModel.py
+                python /$PROJECT_DIR/Train/saveModel.py $PROJECT_DIR
                 "
         '''
         sh '''
