@@ -13,4 +13,4 @@ def saveModel(model_name):
     m1.registerModelArtifacts()
 
 if __name__ == "__main__":
-    myfunc(sys.argv)
+    saveModel(sys.argv)
