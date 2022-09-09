@@ -1,0 +1,59 @@
+pipeline {
+  agent any
+  environment {
+    AZURE_SUBSCRIPTION_ID='0888be57-ee47-4ba5-be90-b464e3daebf6'
+    AZURE_TENANT_ID='51fb973d-85c3-4d97-9707-645e645454a4'
+    AZURE_STORAGE_ACCOUNT='teste3112268159'
+    WORKSPACE_NAME='data-masters-workspace'
+    RESOURCE_GROUP='DataMasters'
+  }
+  stages {
+    stage('Clone Project.') {
+      steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'azuresp', 
+                          passwordVariable: 'AZURE_CLIENT_SECRET', 
+                          usernameVariable: 'AZURE_CLIENT_ID')]) {
+        sh '''
+            echo "Build step: Clonando projeto e setando variaveis de build"
+            git clone $GIT_PROJECT
+            export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
+            #cd $PROJECT_DIR
+            #export APP=$PROJECT_DIR
+            #export GITHUB_SHA=$(git rev-parse HEAD)
+            echo "Rodar python no docker colocando classe azure ml la dentro"
+            sudo docker run \
+                -e AZURE_CLIENT_SECRET=$AZURE_CLIENT_SECRET \
+                -e AZURE_CLIENT_ID=$AZURE_CLIENT_ID \
+                -e RESOURCE_GROUP=$RESOURCE_GROUP \
+                -e WORKSPACE_NAME=$WORKSPACE_NAME \
+                -e AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID \
+                -e AZURE_TENANT_ID=$AZURE_TENANT_ID \
+                -e AZURE_STORAGE_ACCOUNT=$AZURE_STORAGE_ACCOUNT \
+                -v $PWD/$PROJECT_DIR:/$PROJECT_DIR \
+                python-az \
+                /bin/bash -c "pip install -r /$PROJECT_DIR/Train/requirements.txt && \
+                cd /$PROJECT_DIR/Train && \
+                python  /$PROJECT_DIR/Train/train.py && \
+                python /$PROJECT_DIR/Train/saveModel.py
+                "
+        '''
+        sh '''
+            echo "Clean stopped containers"
+            sudo docker container prune -f
+        '''
+            }
+        }
+      }
+      post {
+        // Clean after build
+        always {
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true)
+        }
+      }
+    }
+  }
+}
