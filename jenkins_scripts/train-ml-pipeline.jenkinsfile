@@ -8,17 +8,17 @@ pipeline {
     RESOURCE_GROUP='DataMasters'
   }
   stages {
-    stage('Clone Project.') {
+    stage('Clone Project. Start Docker image. Train model. Log model to azure ml. ') {
       steps {
         script {
             withCredentials([usernamePassword(credentialsId: 'azuresp', 
                           passwordVariable: 'AZURE_CLIENT_SECRET', 
                           usernameVariable: 'AZURE_CLIENT_ID')]) {
         sh '''
-            echo "Build step: Clonando projeto e setando variaveis de build"
+            #Clone project
             git clone $GIT_PROJECT
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
-            #Git clone pipeline scripts.
+            #Git clone azure pipeline scripts.
             git clone https://github.com/flavio185/MLEngineer.git
             cp MLEngineer/jenkins_scripts/azure-experiment/* $PROJECT_DIR/Train
             echo "Rodar python no docker colocando classe azure ml la dentro"
