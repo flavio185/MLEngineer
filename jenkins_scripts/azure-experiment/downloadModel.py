@@ -13,4 +13,4 @@ def downloadModel(model_name):
     m1.downloadModelArtifacts(model_name, target_dir="app", version=3)
 
 if __name__ == "__main__":
-    myfunc(sys.argv)
+    downloadModel(sys.argv)
