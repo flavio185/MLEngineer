@@ -15,9 +15,9 @@ sudo docker run \
     -v $PWD/MLEngineer/jenkins_scripts/azure-experiment:/azure-experiment \
     python-az \
     /bin/bash -c "cd /azure-experiment && \
-    python downloadModel.py $PROJECT_DIR
+    python downloadModel.py model_name=$PROJECT_DIR version=$MODEL_VERSION
     "
 
-mv output $PROJECT_DIR/API/app 
+sudo mv MLEngineer/jenkins_scripts/azure-experiment/output $PROJECT_DIR/API/app 
 
 sudo rm -rf $PROJECT_DIR MLEngineer
