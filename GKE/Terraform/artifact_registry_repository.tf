@@ -1,5 +1,14 @@
+variable "project_id" {
+  description = "project id"
+}
+
+variable "region" {
+  description = "region"
+}
+
 provider "google" {
-    project = "PROJECT-ID"
+  project = var.project_id
+  region  = var.region
 }
 
 resource "google_artifact_registry_repository" "my-repo" {
@@ -10,3 +19,5 @@ resource "google_artifact_registry_repository" "my-repo" {
   description   = "Docker Registry for GKE"
   format        = "DOCKER"
 }
+
+
