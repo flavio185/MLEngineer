@@ -1,3 +1,7 @@
+provider "google" {
+    project = "PROJECT-ID"
+}
+
 resource "google_artifact_registry_repository" "my-repo" {
   provider = google-beta
 
