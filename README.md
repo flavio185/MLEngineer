@@ -5,7 +5,7 @@ Start jenkins-get-started-vm na azure.
 ### Train model.
 Login to Jenkins: http://20.121.252.249:8080/
 
-Run ModelTrainAndSave on Jenkins.
+Run mode_train_local_save_azure on Jenkins.
 
 Pass git project as parameter: https://github.com/flavio185/ml-salary-predict.git
 
@@ -28,6 +28,9 @@ Create GKE - Google Kubernetes Engine.
 Go to GKE to validate.:
 https://console.cloud.google.com/kubernetes/list/overview?project=mlopscase
 
+#configure kubectl
+ssh azureuser@20.121.252.249
+
 Criado GKE Cluster.
 
 Criado 3 nodes conforme padrão GKE.
@@ -36,7 +39,7 @@ Criado 3 nodes conforme padrão GKE.
 
 Go to Jenkins
 
-conteinerizeMLModel - Deixa o modelo preparado para deploy onde for necessário.
+conteinerize-ml-model - Deixa o modelo preparado para deploy onde for necessário.
 
 deloy_to_gke - Envia imagem para gke e faz o deploy 
 
