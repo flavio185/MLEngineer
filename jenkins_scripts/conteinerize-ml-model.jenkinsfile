@@ -19,7 +19,7 @@ pipeline {
             git clone $GIT_PROJECT
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
             #Git clone azure pipeline scripts.
-            #git clone https://github.com/flavio185/MLEngineer.git
+            git clone https://github.com/flavio185/MLEngineer.git
             cp MLEngineer/jenkins_scripts/azure-experiment/* $PROJECT_DIR/Train
             echo "Rodar python no docker colocando classe azure ml la dentro"
             sudo docker run \
