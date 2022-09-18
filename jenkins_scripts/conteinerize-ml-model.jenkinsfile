@@ -18,10 +18,8 @@ pipeline {
             #Clone project
             git clone $GIT_PROJECT
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
-            #Git clone azure pipeline scripts.
+            #Download model artifacts.
             git clone https://github.com/flavio185/MLEngineer.git
-            cp MLEngineer/jenkins_scripts/azure-experiment/* $PROJECT_DIR/Train
-            echo "Rodar python no docker colocando classe azure ml la dentro"
             sudo docker run \
                 -e AZURE_CLIENT_SECRET=$AZURE_CLIENT_SECRET \
                 -e AZURE_CLIENT_ID=$AZURE_CLIENT_ID \
@@ -30,14 +28,20 @@ pipeline {
                 -e AZURE_SUBSCRIPTION_ID=$AZURE_SUBSCRIPTION_ID \
                 -e AZURE_TENANT_ID=$AZURE_TENANT_ID \
                 -e AZURE_STORAGE_ACCOUNT=$AZURE_STORAGE_ACCOUNT \
-                -v $PWD/$PROJECT_DIR:/$PROJECT_DIR \
+                -v $PWD/MLEngineer/jenkins_scripts/azure-experiment:/azure-experiment \
                 python-az \
-                /bin/bash -c "pip install -r /$PROJECT_DIR/Train/requirements.txt && \
-                cd /$PROJECT_DIR/Train && \
-                python  /$PROJECT_DIR/Train/train.py && \
-                python /$PROJECT_DIR/Train/saveModel.py $PROJECT_DIR
+                /bin/bash -c "cd /azure-experiment && \
+                python downloadModel.py model_name=$PROJECT_DIR version=$MODEL_VERSION
                 "
-            sudo rm -rf $PROJECT_DIR MLEngineer
+            sudo mv MLEngineer/jenkins_scripts/azure-experiment/output $PROJECT_DIR/API/app 
+            sudo rm -rf MLEngineer
+        '''
+        sh '''
+            export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
+            cd $PROJECT_DIR/API
+            export GITHUB_SHA=$(git rev-parse HEAD)
+            sudo docker build --no-cache --tag "$PROJECT_DIR:$GITHUB_SHA" .
+
         '''
         sh '''
             echo "Clean stopped containers"
