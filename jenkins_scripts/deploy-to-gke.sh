@@ -124,5 +124,5 @@ start_kubernetes_deploymentrollout () {
   echo "Build step: Aplicando configuração de deployment para o cluster GKE."   
   kubectl rollout restart deployment  $APP
 }
-start_kubernetes_deploymentrollout
+#start_kubernetes_deploymentrollout
 
