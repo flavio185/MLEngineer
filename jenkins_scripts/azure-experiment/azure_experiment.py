@@ -77,7 +77,7 @@ class AzureModel:
         Model.register(workspace=self.azml_workspace,
                     model_path=self.model_output_path,
                     model_name=self.model_name,
-                    experiment_name="blabla"
+                    self.run.id
                     )
 
     def downloadModelArtifacts(self,  model_name, target_dir='.',version=None):
