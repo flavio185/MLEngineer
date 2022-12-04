@@ -10,6 +10,7 @@ pipeline {
         sh '''
             #Clone project
             git clone https://github.com/flavio185/MLEngineer.git
+            cd MLEngineer/GKE/Terraform
             cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
             if [ -f /var/lib/jenkins/Terraform_Artifacts/terraform.tfstate ]; then
               cp /var/lib/jenkins/Terraform_Artifacts/terraform.tfstate ${WORKSPACE}/MLEngineer/GKE/Terraform/terraform.tfstate
