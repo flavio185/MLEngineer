@@ -9,12 +9,14 @@ pipeline {
                           variable: 'GCLOUD_KEY_JSON')]) {
         sh '''
             #Clone project
-            cat $GCLOUD_KEY_JSON
-            #git clone https://github.com/flavio185/MLEngineer.git
-            #cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
-            #cp /var/lib/jenkins/Terraform_Artifacts/create_gke_terraform.tfstate ${WORKSPACE}/MLEngineer/GKE/Terraform/terraform.tfstate
-            #terraform init && terraform plan && terraform ${FUNCAO} -auto-approve 
-            #cp ${WORKSPACE}/MLEngineer/GKE/Terraform/terraform.tfstate /var/lib/jenkins/Terraform_Artifacts/create_gke_terraform.tfstate
+            git clone https://github.com/flavio185/MLEngineer.git
+            cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
+            if [ -f /var/lib/jenkins/Terraform_Artifacts/terraform.tfstate ]; then
+              cp /var/lib/jenkins/Terraform_Artifacts/terraform.tfstate ${WORKSPACE}/MLEngineer/GKE/Terraform/terraform.tfstate
+            fi
+            #executa terraform
+            terraform init && terraform plan && terraform ${FUNCAO} -auto-approve 
+            cp ${WORKSPACE}/MLEngineer/GKE/Terraform/terraform.tfstate /var/lib/jenkins/Terraform_Artifacts/create_gke_terraform.tfstate
         '''
           }
         }
