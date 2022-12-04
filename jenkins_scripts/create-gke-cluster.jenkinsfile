@@ -12,6 +12,8 @@ pipeline {
             git clone https://github.com/flavio185/MLEngineer.git
             cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
             cd MLEngineer/GKE/Terraform
+            chmod +x *.sh
+            ./gcloud-auth.sh && export GOOGLE_APPLICATION_CREDENTIALS=key.json
             if [ -f /var/lib/jenkins/Terraform_Artifacts/terraform.tfstate ]; then
               cp /var/lib/jenkins/Terraform_Artifacts/terraform.tfstate ${WORKSPACE}/MLEngineer/GKE/Terraform/terraform.tfstate
             fi
