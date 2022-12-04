@@ -5,7 +5,7 @@ pipeline {
     stage('Create/Destroy GKE. ') {
       steps {
         script {
-            withCredentials([file(credentialsId: 'gcloud_key', 
+            withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', 
                           variable: 'GCLOUD_KEY_JSON')]) {
         sh '''
             #Clone project
