@@ -31,7 +31,7 @@ pipeline {
                 -e AZURE_TENANT_ID=$AZURE_TENANT_ID \
                 -e AZURE_STORAGE_ACCOUNT=$AZURE_STORAGE_ACCOUNT \
                 -v $PWD/$PROJECT_DIR:/$PROJECT_DIR \
-                python \
+                python-az \
                 /bin/bash -c "pip install -r /$PROJECT_DIR/Train/requirements.txt && \
                 cd /$PROJECT_DIR/Train && \
                 python  /$PROJECT_DIR/Train/train.py && \
