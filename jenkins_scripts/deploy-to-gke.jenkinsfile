@@ -25,7 +25,7 @@ pipeline {
         }
       }
     }
-    stage('Connect to GCP ') {
+    stage('Push image to Google Cloud Artifact Repository.') {
       steps {
         script {
           withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
