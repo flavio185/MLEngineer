@@ -3,11 +3,9 @@ pipeline {
   environment {
     WORKSPACE_NAME='data-masters-workspace'
     RESOURCE_GROUP='DataMasters'    
-    PROJECT_DIR="$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')"
     REGION='us-central1'
     PROJECT_ID='mlopscase'
     REPOSITORY='mlopscase'
-    IMAGE="$PROJECT_DIR"
   }
   stages {
     stage('Connect to GCP ') {
@@ -31,6 +29,8 @@ pipeline {
         script {
           withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
             sh '''
+              PROJECT_DIR="$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')"
+              IMAGE="$PROJECT_DIR"
               create_set_google_artifactory_repo () {
                 if ( ! gcloud artifacts repositories  list | grep "$REPOSITORY" )  ; then  
                   echo "Repositório não existe. Abortando."
