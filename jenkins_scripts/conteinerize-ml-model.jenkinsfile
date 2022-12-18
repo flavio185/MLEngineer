@@ -39,7 +39,7 @@ pipeline {
         '''
         sh '''
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
-            export MODEL_VERSION=$(cat $GIT_PROJECT/API/app/model_version.py | cut -d= -f2)
+            export MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
             cd $PROJECT_DIR/API
             export GITHUB_SHA=$(git rev-parse HEAD)
             sudo docker build --no-cache --tag "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" .
