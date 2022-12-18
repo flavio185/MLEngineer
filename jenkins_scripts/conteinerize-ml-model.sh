@@ -19,5 +19,4 @@ sudo docker run \
     "
 
 sudo mv MLEngineer/jenkins_scripts/azure-experiment/output $PROJECT_DIR/API/app 
-
-sudo rm -rf $PROJECT_DIR MLEngineer
+sudo rm -rf MLEngineer

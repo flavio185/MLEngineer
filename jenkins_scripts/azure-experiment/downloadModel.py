@@ -9,7 +9,7 @@ def downloadModel(args):
     for i in args:
         if 'version' in i:
             ver=i.split('=')[1]
-        elif 'model_name' in i:
+        if 'model_name' in i:
             m_name=i.split('=')[1]
 
     m1 = AzureModel()
