@@ -32,7 +32,7 @@ pipeline {
           withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
             sh '''
               create_set_google_artifactory_repo () {
-                if ( !  )  ; then  
+                if ( ! gcloud artifacts repositories  list | grep "$REPOSITORY" )  ; then  
                   echo "Repositório não existe. Abortando."
                   exit 1
                 fi
