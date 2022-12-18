@@ -13,24 +13,15 @@ pipeline {
         script {
           withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
             sh '''
-                #Clone MLOPS project
-                git clone $GIT_PROJECT
-                cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
-                cd MLEngineer/GKE/Terraform
-                chmod +x *.sh
-                ./gcloud-auth.sh && export GOOGLE_APPLICATION_CREDENTIALS=key.json
-            '''
-          }
-        }
-      }
-    }
-    stage('Tag Image and push to GCP artifact repository.') {
-      steps {
-        script {
-          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
-            sh '''
               PROJECT_DIR="$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')"
               IMAGE="$PROJECT_DIR"
+              #Clone MLOPS project
+              git clone $GIT_PROJECT
+              cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
+              cd MLEngineer/GKE/Terraform
+              chmod +x *.sh
+              ./gcloud-auth.sh && export GOOGLE_APPLICATION_CREDENTIALS=key.json
+
               create_set_google_artifactory_repo () {
                 if ( ! gcloud artifacts repositories  list | grep "$REPOSITORY" )  ; then  
                   echo "Repositório não existe. Abortando."
