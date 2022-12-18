@@ -32,7 +32,7 @@ pipeline {
           withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
             sh '''
               create_set_google_artifactory_repo () {
-                if ( ! gcloud artifacts repositories  list | grep "$REPOSITORY" )  ; then  
+                if ( !  )  ; then  
                   echo "Repositório não existe. Abortando."
                   exit 1
                 fi
@@ -50,9 +50,9 @@ pipeline {
               IMAGE="$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA"
               CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
               echo "tageando imagem."
-              docker tag $IMAGE $CONTAINER_IMAGE
+              sudo docker tag $IMAGE $CONTAINER_IMAGE
               echo "Build step: Publicando a imagem no Google Artifact Registry."  
-              docker push $CONTAINER_IMAGE
+              sudo docker push $CONTAINER_IMAGE
             '''
           }
         }
