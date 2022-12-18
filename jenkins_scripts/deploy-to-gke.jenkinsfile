@@ -50,7 +50,7 @@ pipeline {
               IMAGE="$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA"
               CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
               echo "tageando imagem."
-              docker tag $IMAGE:$MODEL_VERSION$GITHUB_SHA $CONTAINER_IMAGE
+              docker tag $IMAGE $CONTAINER_IMAGE
               echo "Build step: Publicando a imagem no Google Artifact Registry."  
               docker push $CONTAINER_IMAGE
             '''
