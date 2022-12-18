@@ -1,0 +1,65 @@
+pipeline {
+  agent any
+  environment {
+    WORKSPACE_NAME='data-masters-workspace'
+    RESOURCE_GROUP='DataMasters'    
+    PROJECT_DIR="$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')"
+    REGION='us-central1'
+    PROJECT_ID='mlopscase'
+    REPOSITORY='mlopscase'
+    IMAGE="$PROJECT_DIR"
+  }
+  stages {
+    stage('Connect to GCP ') {
+      steps {
+        script {
+          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
+            sh '''
+                #Clone MLOPS project
+                git clone $GIT_PROJECT
+                cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
+                cd MLEngineer/GKE/Terraform
+                chmod +x *.sh
+                ./gcloud-auth.sh && export GOOGLE_APPLICATION_CREDENTIALS=key.json
+            '''
+          }
+        }
+      }
+    }
+    stage('Tag Image and push to GCP artifact repository.') {
+      steps {
+        script {
+          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
+            sh '''
+              create_set_google_artifactory_repo () {
+                if ( ! gcloud artifacts repositories  list | grep "$REPOSITORY" )  ; then  
+                  echo "Repositório não existe. Abortando."
+                  exit 1
+                fi
+                echo "Configurando repositório para push"
+                gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+              }
+              create_set_google_artifactory_repo
+
+              echo "tageando imagem."
+              CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$MODEL_VERSION$GITHUB_SHA"
+              docker tag $IMAGE:$MODEL_VERSION$GITHUB_SHA $CONTAINER_IMAGE
+              echo "Build step: Publicando a imagem no Google Artifact Registry."  
+              docker push $CONTAINER_IMAGE
+            '''
+          }
+        }
+      }
+      post {
+        // Clean after build
+        always {
+            sh "sudo chmod -R 777 ."
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true)
+        }
+      }
+    }
+  }
+}
