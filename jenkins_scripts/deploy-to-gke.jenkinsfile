@@ -32,7 +32,6 @@ pipeline {
           withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
             sh '''
               PROJECT_DIR="$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')"
-              IMAGE="$PROJECT_DIR"
               #Clone MLOPS project
               git clone $GIT_PROJECT
               create_set_google_artifactory_repo () {
@@ -44,11 +43,11 @@ pipeline {
                 gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
               }
               create_set_google_artifactory_repo
-
+              IMAGE="$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA"
+              CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
               echo "tageando imagem."
               echo "Container Image: $CONTAINER_IMAGE"
               echo "Imagem antes: $IMAGE"
-              CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$MODEL_VERSION$GITHUB_SHA"
               docker tag $IMAGE:$MODEL_VERSION$GITHUB_SHA $CONTAINER_IMAGE
               echo "Build step: Publicando a imagem no Google Artifact Registry."  
               docker push $CONTAINER_IMAGE
