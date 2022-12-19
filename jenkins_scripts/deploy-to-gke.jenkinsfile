@@ -53,16 +53,10 @@ pipeline {
               sudo docker tag $IMAGE $CONTAINER_IMAGE
               echo "Build step: Publicando a imagem no Google Artifact Registry."  
               sudo docker push $CONTAINER_IMAGE
-            '''
-          }
-        }
-      }
-    }
-    stage('Deploy to GKE.') {
-      steps {
-        script {
-          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
-            sh '''
+              #########################
+              #
+              #
+              #
               export CPU="200m"
               export MEM="512m"
               export PROBE_CONTEXT="/health"
