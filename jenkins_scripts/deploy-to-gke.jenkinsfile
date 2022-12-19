@@ -85,6 +85,7 @@ pipeline {
                 yq e ".spec.template.spec.containers[].livenessProbe.httpGet.path = \"${PROBE_CONTEXT}\""  - |
                 yq e ".spec.template.spec.containers[].startupProbe.httpGet.path = \"${PROBE_CONTEXT}\""  - \
                 > deployment_tmp.yaml
+                cat deployment_tmp.yaml
                 cp deployment_tmp.yaml deployment.yaml
                 rm -rf deployment_tmp.yaml; 
               }
