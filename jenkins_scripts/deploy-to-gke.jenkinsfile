@@ -61,6 +61,7 @@ pipeline {
     stage('Deploy to GKE.') {
       steps {
         script {
+          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
             sh '''
               export CPU="200m"
               export MEM="512m"
