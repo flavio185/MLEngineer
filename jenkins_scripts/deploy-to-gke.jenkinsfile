@@ -43,6 +43,7 @@ pipeline {
 
               git clone $GIT_PROJECT
               export PROJECT_DIR="$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')"
+              export APP=$PROJECT_DIR
               #Clone MLOPS project
               export MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
               cd $PROJECT_DIR
