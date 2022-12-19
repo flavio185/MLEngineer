@@ -57,6 +57,79 @@ pipeline {
           }
         }
       }
+    stage('Deploy to GKE.') {
+      steps {
+        script {
+            sh '''
+              export CPU="200m"
+              export MEM="512m"
+              export PROBE_CONTEXT="/health"
+              configure_kubectl (){
+                echo "Build step: Configurando kubectl para o projeto."  
+                CLUSTER_NAME=mlopscase-gke
+                #
+                gcloud container clusters \
+                get-credentials $CLUSTER_NAME \
+                --region $REGION
+              }
+              configure_kubectl
+              configure_deployment_yaml () {   
+                echo "Build step: Deploy the Docker image no GKE cluster."
+                cd $WORKSPACE/$PROJECT_DIR/manifest
+                cat deployment.yaml | 
+                yq e ".metadata.name = \"${APP}\""  - |
+                yq e ".metadata.labels.app = \"${APP}\""  - |
+                yq e ".spec.selector.matchLabels.app = \"${APP}\""  - |
+                yq e ".spec.template.metadata.labels.app = \"${APP}\""  - |
+                yq e ".spec.template.spec.containers[].name = \"${APP}\""  - |
+                yq e ".spec.template.spec.containers[].image = \"${CONTAINER_IMAGE}\""  - |
+                yq e ".spec.template.spec.containers[].resources.requests.cpu = \"${CPU}\""  - |
+                yq e ".spec.template.spec.containers[].resources.requests.memory = \"${MEM}\""  - |
+                yq e ".spec.template.spec.containers[].livenessProbe.httpGet.path = \"${PROBE_CONTEXT}\""  - |
+                yq e ".spec.template.spec.containers[].startupProbe.httpGet.path = \"${PROBE_CONTEXT}\""  - \
+                > deployment_tmp.yaml
+                cp deployment_tmp.yaml deployment.yaml
+                rm -rf deployment_tmp.yaml; 
+              }
+              configure_deployment_yaml
+
+
+              configure_service_yaml () {   
+                echo "Build step: Deploy the Docker image no GKE cluster."
+                cd $WORKSPACE/$PROJECT_DIR/manifest
+                cat service_lb.yaml | 
+                yq e ".metadata.name = \"${APP}\""  - |
+                yq e ".metadata.labels.app = \"${APP}\""  - |
+                yq e ".spec.selector.app = \"${APP}\""  - \
+                > service_lb_tmp.yaml
+                cp service_lb_tmp.yaml service_lb.yaml
+                rm -rf service_lb_tmp.yaml 
+              }
+              configure_service_yaml
+
+
+              echo "Build step: Deploy the Docker image no GKE cluster."
+              apply_deployment () {
+                echo "Build step: Aplicando configuração de deployment para o cluster GKE."   
+                kubectl apply -f $WORKSPACE/$PROJECT_DIR/manifest/deployment.yaml 
+              }
+              apply_deployment
+
+              echo "Build step: Deploy the Docker image no GKE cluster."
+              apply_service () {
+                echo "Build step: Aplicando configuração de deployment para o cluster GKE."   
+                kubectl apply -f $WORKSPACE/$PROJECT_DIR/manifest/service_lb.yaml 
+              }
+              apply_service
+
+              start_kubernetes_deploymentrollout () {
+                echo "Build step: Aplicando configuração de deployment para o cluster GKE."   
+                kubectl rollout restart deployment  $APP
+              }
+            '''
+          }
+        }
+      }
       post {
         // Clean after build
         always {
