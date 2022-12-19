@@ -37,7 +37,7 @@ pipeline {
                   exit 1
                 fi
                 echo "Configurando repositório para push"
-                gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+                sudo gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
               }
               create_set_google_artifactory_repo
 
