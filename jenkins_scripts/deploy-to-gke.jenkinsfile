@@ -133,14 +133,18 @@ pipeline {
         }
       }
     }
-    post {
-      // Clean after build
-      always {
-          sh "sudo chmod -R 777 ."
-          cleanWs(cleanWhenNotBuilt: false,
-                  deleteDirs: true,
-                  disableDeferredWipeout: true,
-                  notFailBuild: true)
+    stage('Limpa') {
+      steps {
+        post {
+          // Clean after build
+          always {
+              sh "sudo chmod -R 777 ."
+              cleanWs(cleanWhenNotBuilt: false,
+                      deleteDirs: true,
+                      disableDeferredWipeout: true,
+                      notFailBuild: true)
+          }
+        }
       }
     }
   }
