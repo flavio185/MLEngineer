@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "chart-mlopscase.fullname" . }}-test-connection"
+  labels:
+    {{- include "chart-mlopscase.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "chart-mlopscase.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
