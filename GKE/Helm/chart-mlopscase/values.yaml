@@ -8,7 +8,7 @@ image:
   repository: us-central1-docker.pkg.dev/mlopscase/mlopscase/ml-salary-predict
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "4c99f6d99f0ff6d6ed4fd41ffdd722ebcf74cdbdc"
+  tag: "5508d82e3a991d8b8368cbf1112b7f17b985e2742"
 
 probeUrl: /api
 
