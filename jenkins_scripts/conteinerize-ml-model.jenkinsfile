@@ -8,7 +8,7 @@ pipeline {
     RESOURCE_GROUP='DataMasters'    
   }
   stages {
-    stage('Clone Project. Start Docker image. Train model. Log model to azure ml. ') {
+    stage('Download ML artifacts from Azure. ') {
       steps {
         script {
             withCredentials([usernamePassword(credentialsId: 'azuresp', 
@@ -37,31 +37,85 @@ pipeline {
             sudo mv MLEngineer/jenkins_scripts/azure-experiment/output $PROJECT_DIR/API/app 
             sudo rm -rf MLEngineer
         '''
-        sh '''
+            }
+        }
+      }
+    }
+    stage('Build Image with ML artifacts. ') {
+      steps {
+        script {
+          sh '''
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
             export MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
             cd $PROJECT_DIR/API
             export GITHUB_SHA=$(git rev-parse HEAD)
             sudo docker build --no-cache --tag "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" .
-
-        '''
-        sh '''
+            sleep 10
             echo "Clean stopped containers"
             sudo docker container prune -f
-        '''
+            echo "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" > image.txt
+          '''
+        }
+      }
+    }
+    stage('Push image to Google Cloud Artifactory. ') {
+      when { 
+        environment name: 'PUSH_TO_ARTIFACTORY', value: 'yes' 
+      }
+      environment {
+        WORKSPACE_NAME='data-masters-workspace'
+        RESOURCE_GROUP='DataMasters'    
+        REGION='us-central1'
+        PROJECT_ID='mlopscase'
+        REPOSITORY='mlopscase'
+      }
+      steps {
+        echo 'Connect to GCP'
+        script {
+          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
+            sh '''
+              GCLOUD_LOGIN_INFO=mlops-service-account@mlopscase.iam.gserviceaccount.com
+              GCLOUD_PROJECT=mlopscase
+              gcloud auth activate-service-account $GCLOUD_LOGIN_INFO \
+              --key-file=$GCLOUD_KEY_JSON --project=$GCLOUD_PROJECT
+              export GOOGLE_APPLICATION_CREDENTIALS=$GCLOUD_KEY_JSON
+              ####
+            '''
+          }
+        }
+        echo "Push image to Google Cloud Artifact Repository."
+        script {
+          sh '''
+            create_set_google_artifactory_repo () {
+              if ( ! gcloud artifacts repositories  list | grep "$REPOSITORY" )  ; then  
+                echo "Repositório não existe. Abortando."
+                exit 1
+              fi
+              echo "Configurando repositório para push"
+              sudo gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
             }
+            create_set_google_artifactory_repo
+
+            #Clone MLOPS project
+            IMAGE=image.txt
+            CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
+            echo "tageando imagem."
+            sudo docker tag $IMAGE $CONTAINER_IMAGE
+            echo "Build step: Publicando a imagem no Google Artifact Registry."  
+            sudo docker push $CONTAINER_IMAGE
+          '''
         }
       }
-      post {
-        // Clean after build
-        always {
-            sh "sudo chmod -R 777 ."
-            cleanWs(cleanWhenNotBuilt: false,
-                    deleteDirs: true,
-                    disableDeferredWipeout: true,
-                    notFailBuild: true)
-        }
-      }
+    }
+  }
+  post {
+    // Clean after build
+    always {
+        sh "sudo chmod -R 777 ."
+        cleanWs(cleanWhenNotBuilt: false,
+                deleteDirs: true,
+                disableDeferredWipeout: true,
+                notFailBuild: true)
     }
   }
 }
