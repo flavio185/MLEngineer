@@ -97,7 +97,7 @@ pipeline {
             create_set_google_artifactory_repo
 
             #Clone MLOPS project
-            IMAGE=image.txt
+            IMAGE=$(cat image.txt)
             CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
             echo "tageando imagem."
             sudo docker tag $IMAGE $CONTAINER_IMAGE
