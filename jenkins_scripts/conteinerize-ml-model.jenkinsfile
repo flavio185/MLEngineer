@@ -53,7 +53,7 @@ pipeline {
             sleep 10
             echo "Clean stopped containers"
             sudo docker container prune -f
-            echo "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" > image.txt
+            echo "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" > ${WORKSPACE}/image.txt
           '''
         }
       }
@@ -97,7 +97,7 @@ pipeline {
             create_set_google_artifactory_repo
 
             #Clone MLOPS project
-            IMAGE=$(cat image.txt)
+            IMAGE=`cat  ${WORKSPACE}/image.txt`
             CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
             echo "tageando imagem."
             sudo docker tag $IMAGE $CONTAINER_IMAGE
