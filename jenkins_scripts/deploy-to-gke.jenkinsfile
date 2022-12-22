@@ -47,8 +47,10 @@ pipeline {
               MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
               cd $PROJECT_DIR
               GITHUB_SHA=$(git rev-parse HEAD)
-              IMAGE="$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA"
-              CONTAINER_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE"
+              IMAGE_TAG="$MODEL_VERSION$GITHUB_SHA"
+              
+              IMAGE_REPOSITORY="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$APP"
+              us-central1-docker.pkg.dev/mlopscase/mlopscase/ml-salary-predict:us-central1-docker.pkg.dev/mlopscase/mlopscase/ml-salary-predict:62e4c52d7815508520cc5277a628c5adda26514a5
 
               configure_kubectl (){
                 echo "Build step: Configurando kubectl para o projeto."  
@@ -64,7 +66,7 @@ pipeline {
                 #Clone MLOPS project
                 cd ${WORKSPACE}
                 git clone https://github.com/flavio185/MLEngineer.git
-                helm upgrade --install $APP ./MLEngineer/GKE/Helm/chart-mlopscase --set=image.tag=$CONTAINER_IMAGE -f ./ml-salary-predict/manifest/Helm/values.yaml
+                helm upgrade --install $APP ./MLEngineer/GKE/Helm/chart-mlopscase --set=image.repository=$IMAGE_REPOSITORY --set=image.tag=$IMAGE_TAG -f ./ml-salary-predict/manifest/Helm/values.yaml
                 #
               }
               installUpgradeHelm
