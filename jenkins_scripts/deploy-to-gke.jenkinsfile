@@ -47,10 +47,9 @@ pipeline {
               MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
               cd $PROJECT_DIR
               GITHUB_SHA=$(git rev-parse HEAD)
+
               IMAGE_TAG="$MODEL_VERSION$GITHUB_SHA"
-              
               IMAGE_REPOSITORY="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$APP"
-              us-central1-docker.pkg.dev/mlopscase/mlopscase/ml-salary-predict:us-central1-docker.pkg.dev/mlopscase/mlopscase/ml-salary-predict:62e4c52d7815508520cc5277a628c5adda26514a5
 
               configure_kubectl (){
                 echo "Build step: Configurando kubectl para o projeto."  
