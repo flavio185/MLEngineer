@@ -48,12 +48,12 @@ pipeline {
             export PROJECT_DIR=$(echo $GIT_PROJECT | awk -F/ '{print $NF}'| sed 's/.git//g')
             export MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
             cd $PROJECT_DIR/API
-            export GITHUB_SHA=$(git rev-parse HEAD)
-            sudo docker build --no-cache --tag "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" .
+            GIT_TAG=$(git tag)
+            sudo docker build --no-cache --tag "$PROJECT_DIR:$MODEL_VERSION$GIT_TAG" .
             sleep 10
             echo "Clean stopped containers"
             sudo docker container prune -f
-            echo "$PROJECT_DIR:$MODEL_VERSION$GITHUB_SHA" > ${WORKSPACE}/image.txt
+            echo "$PROJECT_DIR:$MODEL_VERSION$GIT_TAG" > ${WORKSPACE}/image.txt
           '''
         }
       }

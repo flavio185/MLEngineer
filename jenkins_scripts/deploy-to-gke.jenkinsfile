@@ -46,9 +46,9 @@ pipeline {
               APP=$PROJECT_DIR             
               MODEL_VERSION=$(cat $PROJECT_DIR/API/app/model_version.py | cut -d= -f2)
               cd $PROJECT_DIR
-              GITHUB_SHA=$(git rev-parse HEAD)
+              GIT_TAG=$(git tag)
 
-              IMAGE_TAG="$MODEL_VERSION$GITHUB_SHA"
+              IMAGE_TAG="$MODEL_VERSION$GIT_TAG"
               IMAGE_REPOSITORY="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$APP"
 
               configure_kubectl (){
