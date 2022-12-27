@@ -65,7 +65,7 @@ pipeline {
                 #Clone MLOPS project
                 cd ${WORKSPACE}
                 git clone https://github.com/flavio185/MLEngineer.git
-                helm upgrade --install $APP ./MLEngineer/GKE/Helm/chart-mlopscase --set=image.repository=$IMAGE_REPOSITORY --set=image.tag=$IMAGE_TAG -f ./ml-salary-predict/manifest/Helm/values.yaml
+                helm upgrade --install $APP ./MLEngineer/GKE/Helm/chart-mlopscase -f ./ml-salary-predict/manifest/Helm/values.yaml --set=image.repository=$IMAGE_REPOSITORY --set=image.tag=$IMAGE_TAG
                 #
               }
               installUpgradeHelm
