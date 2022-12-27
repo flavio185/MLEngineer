@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "chart-mlopscase.fullname" . }}
+  name: {{ .Release.Name }}
   labels:
     {{- include "chart-mlopscase.labels" . | nindent 4 }}
 spec:
