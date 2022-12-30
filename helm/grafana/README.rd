@@ -13,11 +13,9 @@ echo "Password: $(kubectl get secret grafana-admin \
 -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}" | base64 --decode)"
 
 
-helm install prometheus \
-  -n monitoring \
-  bitnami/kube-prometheus
-  --version 6.1.4 \
-
+helm install prometheus bitnami/kube-prometheus
+  #-n monitoring \
+  #--version 6.1.4 \
   #-f custom_values.yaml \
 
 helm install my-release bitnami/argo-cd
