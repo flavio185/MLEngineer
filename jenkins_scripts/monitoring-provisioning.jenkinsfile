@@ -54,7 +54,7 @@ pipeline {
                 sleep 30
                 helm upgrade --install grafana bitnami/grafana \
                   -n monitoring \
-                  -f MLEngineer/Helm/grafana/grafana_values.yaml
+                  -f ${WORKSPACE}/MLEngineer/Helm/grafana/grafana_values.yaml
                 #
               }
               installUpgradeMonitoring
