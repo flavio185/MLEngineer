@@ -45,7 +45,6 @@ pipeline {
 
               installUpgradeMonitoring(){
                 #Clone MLOPS project
-                git clone https://github.com/flavio185/MLEngineer.git
                 helm repo add bitnami https://charts.bitnami.com/bitnami
                 sleep 5
                 helm upgrade --install  prometheus bitnami/kube-prometheus \
@@ -53,7 +52,7 @@ pipeline {
                 sleep 30
                 helm upgrade --install grafana bitnami/grafana \
                   -n monitoring \
-                  -f ${WORKSPACE}/MLEngineer/Helm/grafana/grafana_values.yaml
+                  -f ${WORKSPACE}/helm/grafana/grafana_values.yaml
                 #
               }
               installUpgradeMonitoring
