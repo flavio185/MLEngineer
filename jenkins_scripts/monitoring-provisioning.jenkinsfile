@@ -1,0 +1,77 @@
+pipeline {
+  agent any
+  environment {
+    WORKSPACE_NAME='data-masters-workspace'
+    RESOURCE_GROUP='DataMasters'    
+    REGION='us-central1'
+    PROJECT_ID='mlopscase'
+    REPOSITORY='mlopscase'
+  }
+  stages {
+    stage('Connect to GCP ') {
+      steps {
+        script {
+          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
+            sh '''
+              #####
+              GCLOUD_LOGIN_INFO=mlops-service-account@mlopscase.iam.gserviceaccount.com
+              GCLOUD_PROJECT=mlopscase
+              #cp $GCLOUD_KEY_JSON MLEngineer/GKE/Terraform/key.json
+              gcloud auth activate-service-account $GCLOUD_LOGIN_INFO \
+              --key-file=$GCLOUD_KEY_JSON --project=$GCLOUD_PROJECT
+              export GOOGLE_APPLICATION_CREDENTIALS=$GCLOUD_KEY_JSON
+              ####
+            '''
+          }
+        }
+      }
+    }
+    stage('Upgrade/Install Helm Chart.') {
+      steps {
+        script {
+          withCredentials([file(credentialsId: 'GCLOUD_KEY_JSON', variable: 'GCLOUD_KEY_JSON')]) {
+            sh '''
+              configure_kubectl (){
+                echo "Build step: Configurando kubectl para o projeto."  
+                CLUSTER_NAME=mlopscase-gke
+                #
+                gcloud container clusters \
+                get-credentials $CLUSTER_NAME \
+                --region $REGION
+              }
+              configure_kubectl
+
+              kubectl create namespace monitoring
+
+              installUpgradeMonitoring(){
+                #Clone MLOPS project
+                cd ${WORKSPACE}
+                git clone https://github.com/flavio185/MLEngineer.git
+                helm repo add bitnami https://charts.bitnami.com/bitnami
+                sleep 5
+                helm upgrade --install  prometheus bitnami/kube-prometheus \
+                  -n monitoring
+                sleep 30
+                helm upgrade --install grafana bitnami/grafana \
+                  -n monitoring \
+                  -f MLEngineer/Helm/grafana/grafana_values.yaml
+                #
+              }
+              installUpgradeMonitoring
+            '''
+          }
+        }
+      }
+    }
+  }
+  post {
+    // Clean after build
+    always {
+        sh "sudo chmod -R 777 ."
+        cleanWs(cleanWhenNotBuilt: false,
+                deleteDirs: true,
+                disableDeferredWipeout: true,
+                notFailBuild: true)
+    }
+  }
+}
