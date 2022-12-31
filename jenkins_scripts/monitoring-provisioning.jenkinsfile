@@ -41,7 +41,7 @@ pipeline {
               }
               configure_kubectl
 
-              kubectl create namespace monitoring
+              kubectl get namespace| grep monitoring || kubectl create namespace monitoring
 
               installUpgradeMonitoring(){
                 #Clone MLOPS project
