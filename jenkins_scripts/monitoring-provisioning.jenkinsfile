@@ -41,8 +41,6 @@ pipeline {
               }
               configure_kubectl
 
-              kubectl get namespace| grep monitoring || kubectl create namespace monitoring
-
               installUpgradeMonitoring(){
                 #Clone MLOPS project
                 helm repo add bitnami https://charts.bitnami.com/bitnami
