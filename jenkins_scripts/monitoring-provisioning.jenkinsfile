@@ -45,9 +45,11 @@ pipeline {
                 #Clone MLOPS project
                 helm repo add bitnami https://charts.bitnami.com/bitnami
                 sleep 5
-                helm upgrade --install  prometheus bitnami/kube-prometheus 
+                helm upgrade --install  prometheus bitnami/kube-prometheus \
+                  -n default
                 sleep 30
                 helm upgrade --install grafana bitnami/grafana \
+                  -n default \
                   -f ${WORKSPACE}/helm/grafana/grafana_values.yaml
                 #
               }
