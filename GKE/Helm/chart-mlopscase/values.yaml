@@ -12,7 +12,8 @@ image:
 
 probeUrl: /api
 
-podAnnotations: {}
+podAnnotations: 
+  prometheus.io/scrape: 'true'
 
 podSecurityContext: {}
   # fsGroup: 2000
