@@ -23,9 +23,6 @@ pipeline {
       }
     }    
     stage('Push image to Google Cloud Artifactory. ') {
-      when { 
-        environment name: 'PUSH_TO_ARTIFACTORY', value: 'yes' 
-      }
       environment {
         WORKSPACE_NAME='data-masters-workspace'
         RESOURCE_GROUP='DataMasters'    
