@@ -1,5 +1,4 @@
-service:
-  type: LoadBalancer
+prometheus.service.type: LoadBalancer
 prometheus.additionalScrapeConfigs.enabled: true
 prometheus.additionalScrapeConfigs.type: internal
 prometheus.additionalScrapeConfigs.internal.jobList: |
