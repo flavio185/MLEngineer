@@ -3,7 +3,6 @@ service:
 additionalScrapeConfigs:
   enabled: true
   type: internal
-  internal:
     jobList: |
     - job_name: "fastapi"
     kubernetes_sd_configs:
