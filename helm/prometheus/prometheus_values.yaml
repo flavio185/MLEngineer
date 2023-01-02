@@ -5,11 +5,11 @@ prometheus:
     enabled: true
     type: internal
     internal:
-      jobList: |
+      jobList: |  
         - job_name: "fastapi"
-        kubernetes_sd_configs:
-        - role: "pod"
-          relabel_configs:
-          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-            regex: chart-mlopscase
-            action: keep
+          kubernetes_sd_configs:
+          - role: "pod"
+            relabel_configs:
+            - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+              regex: chart-mlopscase
+              action: keep
