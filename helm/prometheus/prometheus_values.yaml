@@ -10,6 +10,6 @@ prometheus.additionalScrapeConfigs.internal.jobList=
         kubernetes_sd_configs:
         - role: "pod"
         relabel_configs:
-        - source_labels: [__meta_kubernetes_pod_label_app.kubernetes.io/name]
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
           regex: chart-mlopscase
           action: keep

@@ -48,7 +48,8 @@ pipeline {
                 helm repo add bitnami https://charts.bitnami.com/bitnami
                 sleep 5
                 helm upgrade --install  prometheus bitnami/kube-prometheus \
-                  -n monitoring
+                  -n monitoring \
+                  -f ${WORKSPACE}/helm/prometheus/prometheus_values.yaml
                 sleep 30
                 helm upgrade --install grafana bitnami/grafana \
                   -n monitoring \
