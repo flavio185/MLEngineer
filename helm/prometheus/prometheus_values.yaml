@@ -1,7 +1,7 @@
 service:
   type: LoadBalancer
-prometheus.additionalScrapeConfigs.enabled: 'true'
-prometheus.additionalScrapeConfigs.type: 'internal'
+prometheus.additionalScrapeConfigs.enabled: true
+prometheus.additionalScrapeConfigs.type: internal
 prometheus.additionalScrapeConfigs.internal.jobList: |
   - job_name: "fastapi"
   kubernetes_sd_configs:
