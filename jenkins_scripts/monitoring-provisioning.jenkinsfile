@@ -41,15 +41,17 @@ pipeline {
               }
               configure_kubectl
 
-              #kubectl get namespace| grep monitoring || kubectl create namespace monitoring
+              kubectl get namespace| grep monitoring || kubectl create namespace monitoring
 
               installUpgradeMonitoring(){
                 #Clone MLOPS project
                 helm repo add bitnami https://charts.bitnami.com/bitnami
                 sleep 5
-                helm upgrade --install  prometheus bitnami/kube-prometheus 
+                helm upgrade --install  prometheus bitnami/kube-prometheus \
+                  -n monitoring
                 sleep 30
                 helm upgrade --install grafana bitnami/grafana \
+                  -n monitoring \
                   -f ${WORKSPACE}/helm/grafana/grafana_values.yaml
                 #
               }
