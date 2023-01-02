@@ -1,2 +1,15 @@
 service:
   type: LoadBalancer
+
+prometheus.additionalScrapeConfigs.enabled=true
+prometheus.additionalScrapeConfigs.type=internal
+prometheus.additionalScrapeConfigs.internal.jobList=
+      - job_name: 'fastapi'
+        # metrics_path defaults to '/metrics'
+        # scheme defaults to 'http'.
+        kubernetes_sd_configs:
+        - role: "pod"
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app.kubernetes.io/name]
+          regex: chart-mlopscase
+          action: keep
