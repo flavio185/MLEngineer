@@ -1,6 +1,6 @@
 prometheus:
-  service:
-    type: LoadBalancer
+  #service:
+  #  type: LoadBalancer
   additionalScrapeConfigs:
     enabled: true
     type: internal
