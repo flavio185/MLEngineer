@@ -3,7 +3,7 @@ service:
 
 prometheus.additionalScrapeConfigs.enabled=true
 prometheus.additionalScrapeConfigs.type=internal
-prometheus.additionalScrapeConfigs.internal.jobList=
+prometheus.additionalScrapeConfigs.internal.jobList="
       - job_name: 'fastapi'
         # metrics_path defaults to '/metrics'
         # scheme defaults to 'http'.
@@ -12,4 +12,4 @@ prometheus.additionalScrapeConfigs.internal.jobList=
         relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
           regex: chart-mlopscase
-          action: keep
+          action: keep"
