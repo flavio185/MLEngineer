@@ -62,6 +62,114 @@ psql -U $POSTGRES_USER -d $POSTGRES_DB -p $POSTGRES_PASSWORD
             - name: POSTGRES_USER
               value: {{ .Values.postgresql.username }}
             - name: POSTGRES_PASSWORD
+  
+When MLflow is configured to use PostgreSQL as the backend store, it automatically creates several tables to store metadata about experiments, runs, metrics, parameters, tags, and artifacts. Here are the main tables that MLflow creates in the PostgreSQL database:
+
+### Tables Created by MLflow
+
+1. **experiments**:
+   - Stores information about experiments.
+   - Columns:
+     - `experiment_id`: Unique identifier for the experiment.
+     - `name`: Name of the experiment.
+     - `artifact_location`: Location where artifacts are stored.
+     - `lifecycle_stage`: Lifecycle stage of the experiment (e.g., active, deleted).
+     - `creation_time`: Timestamp when the experiment was created.
+     - `last_update_time`: Timestamp when the experiment was last updated.
+
+2. **runs**:
+   - Stores information about runs.
+   - Columns:
+     - `run_uuid`: Unique identifier for the run.
+     - `name`: Name of the run.
+     - `source_type`: Type of the source (e.g., notebook, project).
+     - `source_name`: Name of the source.
+     - `entry_point_name`: Entry point name.
+     - `user_id`: User who initiated the run.
+     - `status`: Status of the run (e.g., running, finished, failed).
+     - `start_time`: Timestamp when the run started.
+     - `end_time`: Timestamp when the run ended.
+     - `source_version`: Version of the source.
+     - `lifecycle_stage`: Lifecycle stage of the run (e.g., active, deleted).
+     - `artifact_uri`: URI where artifacts are stored.
+     - `experiment_id`: Identifier of the experiment to which the run belongs.
+
+3. **metrics**:
+   - Stores metrics logged during runs.
+   - Columns:
+     - `key`: Name of the metric.
+     - `value`: Value of the metric.
+     - `timestamp`: Timestamp when the metric was logged.
+     - `run_uuid`: Identifier of the run to which the metric belongs.
+     - `step`: Step at which the metric was logged.
+
+4. **params**:
+   - Stores parameters logged during runs.
+   - Columns:
+     - `key`: Name of the parameter.
+     - `value`: Value of the parameter.
+     - `run_uuid`: Identifier of the run to which the parameter belongs.
+
+5. **tags**:
+   - Stores tags associated with runs.
+   - Columns:
+     - `key`: Name of the tag.
+     - `value`: Value of the tag.
+     - `run_uuid`: Identifier of the run to which the tag belongs.
+
+6. **latest_metrics**:
+   - Stores the latest values of metrics for each run.
+   - Columns:
+     - `key`: Name of the metric.
+     - `value`: Latest value of the metric.
+     - `timestamp`: Timestamp when the metric was last logged.
+     - `run_uuid`: Identifier of the run to which the metric belongs.
+     - `step`: Step at which the metric was last logged.
+
+### Example SQL Queries to Inspect Tables
+
+You can use the following SQL queries to inspect the tables created by MLflow in PostgreSQL:
+
+1. **List all tables**:
+   ```sql
+   SELECT table_name
+   FROM information_schema.tables
+   WHERE table_schema = 'public';
+   ```
+
+2. **Describe the `experiments` table**:
+   ```sql
+   \d experiments
+   ```
+
+3. **Describe the `runs` table**:
+   ```sql
+   \d runs
+   ```
+
+4. **Describe the `metrics` table**:
+   ```sql
+   \d metrics
+   ```
+
+5. **Describe the `params` table**:
+   ```sql
+   \d params
+   ```
+
+6. **Describe the `tags` table**:
+   ```sql
+   \d tags
+   ```
+
+7. **Describe the `latest_metrics` table**:
+   ```sql
+   \d latest_metrics
+   ```
+
+### Summary
+
+MLflow creates several tables in the PostgreSQL database to store metadata about experiments, runs, metrics, parameters, tags, and artifacts. These tables include `experiments`, `runs`, `metrics`, `params`, `tags`, and `latest_metrics`. You can use SQL queries to inspect these tables and understand the structure and data stored in them.
 
 ### Minio
 
