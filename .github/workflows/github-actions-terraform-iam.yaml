@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - feature/my-terraform
+  workflow_dispatch:
+    
 
 jobs:
   terraform:
@@ -23,7 +25,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.9.8  # Specify the Terraform version you want to use
+          terraform_version: 1.9.8  # Specify the Terraform version you want to use1
       
       - name: Export Terraform Variables
         run: |
