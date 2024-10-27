@@ -3,7 +3,7 @@ name: Terraform
 on:
   push:
     branches:
-      - feature/mlflow
+      - feature/my-terraform
 
 jobs:
   terraform:
