@@ -26,6 +26,12 @@ chmod 700 get_helm.sh
 
 # Install git
 sudo yum install git -y
+
+#Install Terraform
+curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+unzip terraform.zip
+sudo mv terraform /usr/local/bin/
+rm terraform.zip
 #------------------------------
 
 # Set AWS credentials
