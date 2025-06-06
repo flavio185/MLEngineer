@@ -2,6 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: postgres-pv-claim
+  namespace: {{ .Release.Namespace }}
   labels:
     app: postgres
 spec:
