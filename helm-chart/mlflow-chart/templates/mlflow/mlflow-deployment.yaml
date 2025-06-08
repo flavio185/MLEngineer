@@ -21,7 +21,7 @@ spec:
             - "server"
             - "--backend-store-uri"
             - "postgresql://{{ .Values.postgresql.username }}:{{ .Values.postgresql.password }}@postgresql:5432/{{ .Values.postgresql.database }}"
-            - "--default-artifact-root"
+            - "--artifacts-destination"
             - "s3://{{ .Values.minio.bucket }}"
             - "--host"
             - "0.0.0.0" 

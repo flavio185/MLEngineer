@@ -17,3 +17,5 @@ chmod 700 get_helm.sh
 #4 - Apply helm template
 cd helm-chart/mlflow-chart
 helm install mlflow . --namespace mlflow-ns --create-namespace 
+
+kubectl config set-context --current --namespace=mlflow-ns
