@@ -13,7 +13,10 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 
 #3 - Clone git
-	
+git clone https://github.com/flavio185/MLEngineer.git
+cd MLEngineer
+git checkout feature/mlflow
+
 #4 - Apply helm template
 cd helm-chart/mlflow-chart
 helm install mlflow . --namespace mlflow-ns --create-namespace 
