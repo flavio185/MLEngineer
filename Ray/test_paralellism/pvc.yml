@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ray-shared-pvc
+  namespace: app-ns
+spec:
+  accessModes:
+    - ReadWriteMany  # allows multiple pods to mount
+  storageClassName: azurefile
+  resources:
+    requests:
+      storage: 10Gi
+
