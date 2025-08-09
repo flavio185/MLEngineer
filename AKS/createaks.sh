@@ -1,5 +1,3 @@
-
-
 #!/bin/bash
 
 # Check if Azure CLI is installed
@@ -13,11 +11,11 @@ fi
 # az login --scope https://management.core.windows.net//.default
 
 # Variables
-RESOURCE_GROUP="DataMaster2024"
+RESOURCE_GROUP="MLProjects"
 CLUSTER_NAME="aks-cluster-datamaster"
-LOCATION="eastus"
-NODE_SIZE="Standard_B2s"
-NODE_COUNT=1
+LOCATION="westus3"
+NODE_SIZE="Standard_D4s_v3"
+NODE_COUNT=2
 
 OUTPUT_FILE="az_aks_output.log"
 > $OUTPUT_FILE
@@ -29,7 +27,7 @@ fi
 # Create a resource group if option createrg is passed to the script
 if [ "$1" == "createrg" ]; then
   echo "Creating resource group $RESOURCE_GROUP in $LOCATION" >> $OUTPUT_FILE
-  if ! az group create --name $RESOURCE_GROUP --location $LOCATION  2>&1 | tee -a $OUTPUT_FILE; then
+  if ! az group create --name $RESOURCE_GROUP --location $LOCATION 2>&1 | tee -a $OUTPUT_FILE; then
     echo "Failed to create resource group" >> $OUTPUT_FILE
     exit 1
   fi
