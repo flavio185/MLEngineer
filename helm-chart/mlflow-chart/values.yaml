@@ -1,5 +1,5 @@
 mlflow:
-  image: flavio185/mlflow:custom
+  image: flavio185/mlflow:3.3.0-psql
 postgresql:
   image: postgres:13
   username: mlflow
