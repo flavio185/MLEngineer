@@ -40,3 +40,10 @@ kubectl get raycluster -n app-ns
 
 
 kubectl port-forward service/rayjob-sample-pararell-raycluster-rmzmb-head-svc 8265:8265 > /dev/null &
+
+#Submit a job to the cluster
+#https://docs.ray.io/en/latest/cluster/kubernetes/getting-started/ray
+ray job submit   \
+    --address http://localhost:8265 \
+    --working-dir . \
+    -- uv run data_processing/bronze/ingest_bronze.py
