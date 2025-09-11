@@ -87,8 +87,8 @@ install_istio() {
     echo -e "${YELLOW}Installing Istio service mesh...${NC}"
     
     # Download Istio
-    curl -L https://istio.io/downloadIstio | sh -
-    cd istio-*
+    curl -L https://github.com/istio/istio/releases/download/1.27.1/istio-1.27.1-linux-amd64.tar.gz | tar xz
+    cd istio-1.27.1
     export PATH=$PWD/bin:$PATH
     
     # Install Istio
